@@ -8,7 +8,10 @@ from PyQt6.QtCore import Qt, QPoint
 from PyQt6.QtWidgets import QApplication, QFileDialog, QDialog, QProgressBar, QVBoxLayout, QLineEdit
 from res import resource_rc
 
-
+'''
+界面登录模块基类
+实现用户登录功能控件
+'''
 class login_func():
     def __init__(self, proc_path: str, logger=None):
         self.logger = logger

@@ -12,8 +12,10 @@ from PyQt6.QtWidgets import QApplication, QWidget, QFileDialog, QVBoxLayout
 from qfluentwidgets import PushButton, FlowLayout, TogglePushButton, RoundMenu, PrimaryDropDownToolButton, ToolButton, ProgressRing, MessageBoxBase, SubtitleLabel, LineEdit
 from qfluentwidgets import FluentIcon as FIF
 
+'''
+弹框类组件，实现邮箱地址录入
+'''
 class CustomMessageBox(MessageBoxBase):
-    """ Custom message box """
     def __init__(self, parent=None):
         super().__init__(parent)
         self.titleLabel = SubtitleLabel('邮件发送至', self)
@@ -44,7 +46,10 @@ class CustomMessageBox(MessageBoxBase):
         pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
         return re.match(pattern, email) is not None
 
-
+'''
+主界面模块基类
+实现用户主界面功能控件，流式布局模式，可研究提升
+'''
 class main_func():
     def __init__(self, parent_ui: QWidget, proc_path: str, logger=None):
         self.parent_ui = parent_ui

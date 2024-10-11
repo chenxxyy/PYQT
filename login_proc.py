@@ -23,7 +23,10 @@ class WorkerThread(QThread):
             # self.progress.emit(i + 1)  # 发射进度信号
         self.finished.emit('登录成功', None)  # 任务完成后发射完成信号
 
-# 工作流交互组件
+'''
+继承登录基类，与后端flow流程数据交互，界面相关的流程
+工作流交互组件
+'''
 class login_proc(login_func):
     def __init__(self, proc_path: str, logger=None):
         super().__init__(proc_path, logger)

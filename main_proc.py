@@ -28,6 +28,7 @@ class WorkerThread(QThread):
         with QMutexLocker(self.mutex):self.condition.wakeAll()
         self.finished.emit('执行完毕')  # 任务完成后发射完成信号
 
+# 工作进度圆圈方式
 class ProgressThread(QThread):
     # 自定义信号，用于发射进度更新
     progress = pyqtSignal(int)
@@ -47,7 +48,10 @@ class ProgressThread(QThread):
         with QMutexLocker(self.mutex):self.condition.wait(self.mutex)
         self.progress.emit(100) #发送100%完成信号
 
-
+'''
+继承主界面基类，与后端flow流程数据交互，界面相关的流程
+工作流交互组件
+'''
 class main_proc(main_func):
     def __init__(self, obj, parent_ui: QWidget, proc_path: str, logger=None):
         super().__init__(parent_ui, proc_path, logger)
