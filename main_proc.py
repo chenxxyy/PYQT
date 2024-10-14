@@ -1,6 +1,7 @@
 import os
 import sys
 import time
+import random
 import Qinit_func
 from main_func import main_func
 from PyQt6.QtWidgets import QApplication, QWidget
@@ -21,12 +22,23 @@ class WorkerThread(QThread):
         self.login_obj = login_obj   # 登录对象
 
     def run(self):
-        total_steps = 120  # 总步骤数
-        for i in range(total_steps):
-            time.sleep(0.1)  # 模拟处理任务的时间
-        #自动锁管理通知完成
-        with QMutexLocker(self.mutex):self.condition.wakeAll()
-        self.finished.emit('执行完毕')  # 任务完成后发射完成信号
+        try:
+            total_steps = 10  # 总步骤数
+            for i in range(total_steps):
+                time.sleep(0.1)  # 模拟处理任务的时间
+            # 任务完成后进度圈停止
+            self.main_proc.progress_thread.stop()
+            time.sleep(1)
+            #自动锁管理通知完成
+            with QMutexLocker(self.mutex):self.condition.wakeAll()
+            time.sleep(2)
+            self.finished.emit('执行完毕')  # 任务完成后发射完成信号
+        except Exception as e:
+            print(e)
+            self.finished.emit(str(e))  # 任务异常发射完成信号
+        finally:
+            self.quit() # 请求线程退出
+            
 
 # 工作进度圆圈方式
 class ProgressThread(QThread):
@@ -35,15 +47,22 @@ class ProgressThread(QThread):
 
     def __init__(self, condition, mutex):
         super().__init__()
+        self._is_running = True
         self.condition = condition
         self.mutex = mutex
 
+    def stop(self):
+        self._is_running = False
+
     def run(self):
+        count = 0
         total_steps = 99  # 总步骤数
-        for i in range(total_steps):
-            time.sleep(0.1)  # 模拟处理任务的时间
-            self.progress.emit(i + 1)  # 发射进度信号
-        
+        while self._is_running:
+            time.sleep(random.uniform(0.5,1))  # 模拟处理任务的时间
+            count += 1
+            self.progress.emit(count)  # 发射进度信号
+            if count == total_steps:
+                break
         #自动锁管理等待任务完成
         with QMutexLocker(self.mutex):self.condition.wait(self.mutex)
         self.progress.emit(100) #发送100%完成信号
